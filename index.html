@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jack St Jean</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #fff;
+      color: #111;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 36px 24px;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .name { font-weight: bold; margin-bottom: 28px; }
+    .section { margin-bottom: 24px; }
+
+    .section-label {
+      color: #f0a500;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    /* Filter row */
+    .filter-cats {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 4px 10px;
+      margin-bottom: 4px;
+    }
+
+    .filter-label { color: #ccc; font-size: 11px; }
+
+    .filter-cat {
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      font-size: 12px;
+      color: #999;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .filter-cat:hover        { color: #111; }
+    .filter-cat.open         { color: #111; }
+    .filter-cat.active       { color: #f0a500; text-decoration: underline; }
+
+    /* Sub-row */
+    .filter-sub {
+      display: none;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+      margin-bottom: 12px;
+    }
+
+    .filter-sub.visible { display: flex; }
+
+    .filter-sub-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      font-size: 12px;
+      color: #aaa;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .filter-sub-btn:hover  { color: #111; }
+    .filter-sub-btn.active { color: #f0a500; text-decoration: underline; }
+
+    /* Credits */
+    .credit { margin-bottom: 12px; }
+    .credit.hidden { display: none; }
+
+    .credit-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .credit-right {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .platform-icon {
+      display: inline-flex;
+      align-items: center;
+      opacity: 0.65;
+      transition: opacity 0.15s;
+      text-decoration: none;
+    }
+
+    .platform-icon:hover { opacity: 1; }
+
+    .credit-date { color: #888; }
+
+    .credit-sub  { color: #555; padding-left: 12px; }
+
+    .credit-tags {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2px;
+      padding-left: 12px;
+      font-size: 11px;
+      color: #bbb;
+    }
+
+    audio {
+      width: 100%;
+      height: 22px;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .plain-list { line-height: 1.9; }
+    .plain-list a { display: block; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="name">Jack St Jean</div>
+
+  <div class="section">
+    <div class="plain-list">
+      <a href="mailto:you@email.com">you@email.com</a>
+      <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://soundcloud.com/yourhandle" target="_blank" rel="noopener">SoundCloud</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Credits</div>
+    <div class="filter-cats" id="filter-cats">
+      <span class="filter-label">filter by</span>
+    </div>
+    <div class="filter-sub" id="filter-sub"></div>
+    <div id="credits"></div>
+  </div>
+
+
+
+</div>
+
+<script>
+  // Streaming platform icons — add more here as needed
+  const PLATFORMS = {
+    spotify: {
+      label: 'Spotify',
+      icon: `<svg width="13" height="13" viewBox="0 0 24 24" style="display:block">
+        <circle cx="12" cy="12" r="12" fill="#1DB954"/>
+        <path d="M7.5 16.3c2.8-1.6 6.4-1.4 9.1.2" stroke="white" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+        <path d="M6.6 12.7c3.6-2 8-1.7 11.3.3"   stroke="white" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+        <path d="M5.8 9c4.5-2.4 10-2 13.8.5"      stroke="white" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      </svg>`
+    },
+    soundcloud: {
+      label: 'SoundCloud',
+      icon: `<svg width="14" height="11" viewBox="0 0 14 11" style="display:block">
+        <rect x="0"  y="5" width="2" height="6" rx="1" fill="#FF5500"/>
+        <rect x="3"  y="3" width="2" height="8" rx="1" fill="#FF5500"/>
+        <rect x="6"  y="0" width="2" height="11" rx="1" fill="#FF5500"/>
+        <rect x="9"  y="3" width="2" height="8" rx="1" fill="#FF5500"/>
+        <rect x="12" y="5" width="2" height="6" rx="1" fill="#FF5500"/>
+      </svg>`
+    },
+    applemusic: {
+      label: 'Apple Music',
+      icon: `<svg width="13" height="13" viewBox="0 0 24 24" style="display:block">
+        <circle cx="12" cy="12" r="12" fill="#fc3c44"/>
+        <path d="M16 7.5v6.8c0 1.2-.9 2.2-2 2.2s-2-1-2-2.2.9-2.2 2-2.2c.4 0 .7.1 1 .3V9l-7 1.5v7c0 1.2-.9 2.2-2 2.2S5 18.7 5 17.5s.9-2.2 2-2.2c.4 0 .7.1 1 .3V8.5L16 7.5z" fill="white"/>
+      </svg>`
+    },
+  };
+
+  // ─── ADD YOUR TRACKS HERE ───────────────────────────────────────────────────
+  // work:    services you performed (used for "My Work" filter)
+  // credits: additional creative roles, e.g. guitars, piano (used for "Credits" filter)
+  // links:   uncomment and add URLs for streaming platforms
+  const tracks = [
+    {
+      title: "Intro",
+      artist: "Wizedev",
+      date: "202310",
+      genres: ["hiphop"],
+      work: ["production"],
+      credits: ["guitar"],
+      genreLabel: "hiphop",
+      workLabel: "production",
+      src: "audio/wizedev_intro.mp3",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Rewind",
+      artist: "Wizedev",
+      date: "202310",
+      genres: ["hiphop"],
+      work: ["production"],
+      credits: [],
+      genreLabel: "hiphop",
+      workLabel: "production",
+      src: "audio/wizedev_rewind.mp3",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "I'll Be There",
+      artist: "Wizedev",
+      date: "202310",
+      genres: ["hiphop"],
+      work: ["production"],
+      credits: ["bass"],
+      genreLabel: "hiphop",
+      workLabel: "production",
+      src: "audio/wizedev_i'll-be-there.mp3",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Long Night",
+      artist: "Wizedev",
+      date: "202310",
+      genres: ["hiphop"],
+      work: ["production"],
+      credits: [],
+      genreLabel: "hiphop",
+      workLabel: "production",
+      src: "audio/wizedev_long-night.mp3",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Take My Hand",
+      artist: "Wizedev",
+      date: "202310",
+      genres: ["hiphop"],
+      work: ["production"],
+      credits: [],
+      genreLabel: "hiphop",
+      workLabel: "production",
+      src: "audio/wizedev_take-my-hand.mp3",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Zion",
+      artist: "Wizedev",
+      date: "202310",
+      genres: ["hiphop"],
+      work: ["production"],
+      credits: [],
+      genreLabel: "hiphop",
+      workLabel: "production",
+      src: "audio/wizedev_zion.mp3",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Outro",
+      artist: "Wizedev",
+      date: "202310",
+      genres: ["hiphop"],
+      work: ["production"],
+      credits: [],
+      genreLabel: "hiphop",
+      workLabel: "production",
+      src: "audio/wizedev_outro.mp3",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Dreams",
+      artist: "Porcelain Parrot",
+      date: "202605",
+      genres: ["punk", "shoegaze"],
+      work: ["recording"],
+      credits: [],
+      genreLabel: "punk / shoegaze",
+      workLabel: "recording",
+      src: "audio/porcelain-parrot_dreams.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Volume Negates Luck",
+      artist: "Porcelain Parrot",
+      date: "202605",
+      genres: ["punk", "shoegaze"],
+      work: ["recording"],
+      credits: [],
+      genreLabel: "punk / shoegaze",
+      workLabel: "recording",
+      src: "audio/porcelain-parrot_volume-negates-luck.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Whiskey Before Breakfast",
+      artist: "Lemongrass Roots Band",
+      date: "202203",
+      genres: ["bluegrass"],
+      work: ["recording", "mixing", "mastering"],
+      credits: [],
+      genreLabel: "bluegrass",
+      workLabel: "recording · mixing · mastering",
+      src: "audio/lemongrass_whiskey-before-breakfast.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Tswv Yexus Lub Npe",
+      artist: "Lemongrass Roots Band",
+      date: "202203",
+      genres: ["bluegrass"],
+      work: ["recording", "mixing", "mastering"],
+      credits: [],
+      genreLabel: "bluegrass",
+      workLabel: "recording · mixing · mastering",
+      src: "audio/lemongrass_tswv-yexus-lub-npe.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Old Home Place",
+      artist: "Lemongrass Roots Band",
+      date: "202203",
+      genres: ["bluegrass"],
+      work: ["recording", "mixing", "mastering"],
+      credits: [],
+      genreLabel: "bluegrass",
+      workLabel: "recording · mixing · mastering",
+      src: "audio/lemongrass_old-home-place.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Kuv Tus Kwvluag",
+      artist: "Lemongrass Roots Band",
+      date: "202203",
+      genres: ["bluegrass"],
+      work: ["recording", "mixing", "mastering"],
+      credits: [],
+      genreLabel: "bluegrass",
+      workLabel: "recording · mixing · mastering",
+      src: "audio/lemongrass_kuv-tus-kwvluag.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "East Tennessee Blues",
+      artist: "Lemongrass Roots Band",
+      date: "202203",
+      genres: ["bluegrass"],
+      work: ["recording", "mixing", "mastering"],
+      credits: [],
+      genreLabel: "bluegrass",
+      workLabel: "recording · mixing · mastering",
+      src: "audio/lemongrass_east-tennessee-blues.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "She's Not Like Me",
+      artist: "kinfolk",
+      date: "202504",
+      genres: ["indie", "folk"],
+      work: ["production", "recording", "mixing", "mastering"],
+      credits: ["composition", "arranging", "guitar", "bass"],
+      genreLabel: "indie / folk",
+      workLabel: "production · composition · arranging · recording · mixing · mastering",
+      src: "audio/kinfolk_shes-not-like-me.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Pinball Number Count (from Sesame Street)",
+      artist: "Kai Moscow",
+      date: "202404",
+      genres: ["jazz", "fusion", "live"],
+      work: ["recording", "mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz / fusion",
+      workLabel: "recording · mixing · mastering",
+      src: "audio/kai-moscow_pinball-number-count.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Le Bleury (covering Anomalie)",
+      artist: "Kai Moscow",
+      date: "202404",
+      genres: ["jazz", "fusion", "live"],
+      work: ["recording", "mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz / fusion",
+      workLabel: "recording · mixing · mastering",
+      src: "audio/kai-moscow_le-bleury.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Just Shwangen - Live",
+      artist: "Industrial Coffee Pot",
+      date: "202602",
+      genres: ["jazz", "fusion", "live"],
+      work: ["mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz / fusion",
+      workLabel: "mixing · mastering",
+      src: "audio/icp_another-case.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "To the Moon River - Live",
+      artist: "Industrial Coffee Pot",
+      date: "202602",
+      genres: ["jazz", "live"],
+      work: ["mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz",
+      workLabel: "mixing · mastering",
+      src: "audio/icp_to-the-moon-river.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "San Francisco Pilot - Live",
+      artist: "Industrial Coffee Pot",
+      date: "202602",
+      genres: ["jazz", "live"],
+      work: ["mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz",
+      workLabel: "mixing · mastering",
+      src: "audio/icp_to-the-moon-river.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Softly - Live",
+      artist: "Industrial Coffee Pot",
+      date: "202602",
+      genres: ["jazz", "fusion", "live"],
+      work: ["mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz",
+      workLabel: "mixing · mastering",
+      src: "audio/icp_softly.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Rain and Snow - Live",
+      artist: "Industrial Coffee Pot",
+      date: "202602",
+      genres: ["jazz", "live"],
+      work: ["mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz / bossa",
+      workLabel: "mixing · mastering",
+      src: "audio/icp_rain-and-snow.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Our Love - Live",
+      artist: "Industrial Coffee Pot",
+      date: "202602",
+      genres: ["jazz", "live"],
+      work: ["mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz",
+      workLabel: "mixing · mastering",
+      src: "audio/icp_our-love.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Another Case of the No Good Reason - Live",
+      artist: "Industrial Coffee Pot",
+      date: "202602",
+      genres: ["jazz", "fusion", "live"],
+      work: ["mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz / fusion",
+      workLabel: "mixing · mastering",
+      src: "audio/icp_another-case.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Just Friends - Live",
+      artist: "Industrial Coffee Pot",
+      date: "202602",
+      genres: ["jazz", "live"],
+      work: ["mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz",
+      workLabel: "mixing · mastering",
+      src: "audio/icp_softly.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Edging on Merrimon",
+      artist: "Floral Dilemma",
+      date: "202312",
+      genres: ["jazz", "fusion"],
+      work: ["recording", "mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz / fusion",
+      workLabel: "recording · mixing · mastering",
+      src: "audio/floral-dilemma_edging-on-merrimon.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Misty Rain",
+      artist: "Floral Dilemma",
+      date: "202312",
+      genres: ["jazz", "fusion"],
+      work: ["recording", "mixing", "mastering"],
+      credits: [],
+      genreLabel: "jazz / fusion",
+      workLabel: "production · recording · mixing · mastering",
+      src: "audio/floral-dilemma_misty-rain.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Summer's Over (Introlude)",
+      artist: "Donnie Black",
+      date: "202509",
+      genres: ["r&b"],
+      work: ["production", "recording", "mixing", "mastering"],
+      credits: [],
+      genreLabel: "r&b",
+      workLabel: "production · recording · mixing · mastering",
+      src: "audio/donnie-black_summers-over.wav",
+      links: {
+        // spotify:    "https://open.spotify.com/track/...",
+        // soundcloud: "https://soundcloud.com/...",
+      },
+    },
+    {
+      title: "Words I Didn't Say",
+      artist: "Frances Eliza",
+      date: "202605",
+      genres: ["indie", "pop", "rock"],
+      work: ["mixing", "recording"],
+      credits: [],
+      genreLabel: "indie / pop / rock",
+      workLabel: "mixing · recording (vocals)",
+      src: "audio/frances-eliza_words-i-didn't-say.wav",
+      links: {
+        // spotify: "https://open.spotify.com/track/...",
+      },
+    },
+    {
+      title: "Drove Me Away",
+      artist: "Frances Eliza",
+      date: "202605",
+      genres: ["indie", "folk"],
+      work: ["mixing", "recording"],
+      credits: [],
+      genreLabel: "indie / folk",
+      workLabel: "mixing · recording (vocals)",
+      src: "audio/frances-eliza_drove-me-away.wav",
+      links: {},
+    },
+    {
+      title: "Notice Me",
+      artist: "Frances Eliza",
+      date: "202305",
+      genres: ["indie", "rock"],
+      work: ["production", "recording", "mixing"],
+      credits: ["guitars"],
+      genreLabel: "indie / rock",
+      workLabel: "production · recording · mixing",
+      src: "audio/frances-eliza_notice-me.wav",
+      links: {},
+    },
+  ];
+  // ───────────────────────────────────────────────────────────────────────────
+
+  const creditsEl  = document.getElementById('credits');
+  const filterCats = document.getElementById('filter-cats');
+  const filterSub  = document.getElementById('filter-sub');
+
+  // Render tracks sorted newest first
+  [...tracks]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .forEach(t => {
+      const el = document.createElement('div');
+      el.className = 'credit';
+      el.dataset.artist  = t.artist;
+      el.dataset.genres  = t.genres.join(',');
+      el.dataset.work    = t.work.join(',');
+      el.dataset.credits = (t.credits || []).join(',');
+
+      const iconHTML = Object.entries(t.links || {})
+        .filter(([, url]) => url)
+        .map(([key, url]) => {
+          const p = PLATFORMS[key];
+          return p ? `<a href="${url}" class="platform-icon" title="Listen on ${p.label}" target="_blank" rel="noopener">${p.icon}</a>` : '';
+        }).join('');
+
+      el.innerHTML = `
+        <div class="credit-top">
+          <span>${t.title}</span>
+          <span class="credit-right">${iconHTML}<span class="credit-date">${t.date}</span></span>
+        </div>
+        <div class="credit-sub">${t.artist}</div>
+        <div class="credit-tags">
+          <span>${t.genreLabel}</span>
+          <span>${t.workLabel}</span>
+        </div>
+        <audio controls src="${t.src}" preload="none"></audio>
+      `;
+      creditsEl.appendChild(el);
+    });
+
+  // Filter state
+  let openCat = null;
+  let activeFilter = null; // { cat, value }
+
+  const categories = [
+    { key: 'work',    label: 'My Work' },
+    { key: 'artist',  label: 'Artist'  },
+    { key: 'genre',   label: 'Genre'   },
+    { key: 'credits', label: 'Credits' },
+  ];
+
+  function getOptions(cat) {
+    const els = [...creditsEl.querySelectorAll('.credit')];
+    if (cat === 'artist')  return [...new Set(els.map(e => e.dataset.artist))].sort();
+    if (cat === 'genre')   return [...new Set(els.flatMap(e => e.dataset.genres.split(',').filter(Boolean)))].sort();
+    if (cat === 'work')    return [...new Set(els.flatMap(e => e.dataset.work.split(',').filter(Boolean)))].sort();
+    if (cat === 'credits') return [...new Set(els.flatMap(e => e.dataset.credits.split(',').filter(Boolean)))].sort();
+    return [];
+  }
+
+  function matchesFilter(el, cat, value) {
+    if (cat === 'artist')  return el.dataset.artist === value;
+    if (cat === 'genre')   return el.dataset.genres.split(',').includes(value);
+    if (cat === 'work')    return el.dataset.work.split(',').includes(value);
+    if (cat === 'credits') return el.dataset.credits.split(',').includes(value);
+    return true;
+  }
+
+  function applyFilter() {
+    creditsEl.querySelectorAll('.credit').forEach(el => {
+      el.classList.toggle('hidden',
+        activeFilter !== null && !matchesFilter(el, activeFilter.cat, activeFilter.value)
+      );
+    });
+  }
+
+  function updateCatButtons() {
+    filterCats.querySelectorAll('.filter-cat').forEach(btn => {
+      btn.classList.toggle('open',   btn.dataset.cat === openCat);
+      btn.classList.toggle('active', activeFilter !== null && activeFilter.cat === btn.dataset.cat);
+    });
+  }
+
+  function renderSubRow(cat) {
+    filterSub.innerHTML = '';
+    const opts = getOptions(cat);
+    if (!opts.length) { filterSub.classList.remove('visible'); return; }
+
+    opts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-sub-btn';
+      btn.textContent = opt;
+      if (activeFilter && activeFilter.cat === cat && activeFilter.value === opt) {
+        btn.classList.add('active');
+      }
+      btn.addEventListener('click', () => {
+        // Toggle: clicking active sub clears filter
+        activeFilter = (activeFilter && activeFilter.cat === cat && activeFilter.value === opt)
+          ? null
+          : { cat, value: opt };
+        applyFilter();
+        renderSubRow(cat);
+        updateCatButtons();
+      });
+      filterSub.appendChild(btn);
+    });
+    filterSub.classList.add('visible');
+  }
+
+  // Build category buttons
+  categories.forEach(({ key, label }) => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-cat';
+    btn.dataset.cat = key;
+    btn.textContent = label;
+    btn.addEventListener('click', () => {
+      if (openCat === key) {
+        // Close sub-row (keep filter active)
+        openCat = null;
+        filterSub.classList.remove('visible');
+        filterSub.innerHTML = '';
+      } else {
+        // Switch category — clear any existing filter first
+        if (activeFilter && activeFilter.cat !== key) {
+          activeFilter = null;
+          applyFilter();
+        }
+        openCat = key;
+        renderSubRow(key);
+      }
+      updateCatButtons();
+    });
+    filterCats.appendChild(btn);
+  });
+</script>
+</body>
+</html>
