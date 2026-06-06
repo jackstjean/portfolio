@@ -52,7 +52,7 @@ const tracks = [
   },
 */
   {
-    title: "The First Act",
+    title: "The First Act [DEMO]",
     artist: "Jack St Jean",
     date: "202604",
     genres: ["indie", "folk"],
