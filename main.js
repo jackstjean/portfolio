@@ -1,5 +1,17 @@
 // ----- rendering and filter logic -----
 
+// Shared filter state — both sections read from and write to this object
+const activeFilters = {};
+const sections = [];
+
+function applyAllFilters() {
+  sections.forEach(s => s.applyFilter());
+}
+
+function updateAllCatButtons() {
+  sections.forEach(s => s.updateCatButtons());
+}
+
 function buildSection(sectionTracks, listId, catsId, subId, categories) {
   const listEl = document.getElementById(listId);
   const catsEl = document.getElementById(catsId);
@@ -43,8 +55,7 @@ function buildSection(sectionTracks, listId, catsId, subId, categories) {
       listEl.appendChild(el);
     });
 
-  let openCat      = null;
-  let activeFilters = {}; // { cat: value } — multiple filters ANDed together
+  let openCat = null;
 
   function matchesAll(el) {
     return Object.entries(activeFilters).every(([cat, value]) => {
@@ -93,14 +104,16 @@ function buildSection(sectionTracks, listId, catsId, subId, categories) {
         } else {
           activeFilters[cat] = opt;
         }
-        applyFilter();
+        applyAllFilters();
         renderSubRow(cat);
-        updateCatButtons();
+        updateAllCatButtons();
       });
       subEl.appendChild(btn);
     });
     subEl.classList.add('visible');
   }
+
+  sections.push({ applyFilter, updateCatButtons });
 
   const labelEl = document.createElement('span');
   labelEl.className = 'filter-label';
@@ -135,6 +148,13 @@ document.getElementById('section-toggle').addEventListener('click', e => {
   document.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b === btn));
   document.getElementById('section-personal').style.display = show === 'client'   ? 'none' : '';
   document.getElementById('section-client').style.display   = show === 'personal' ? 'none' : '';
+
+  // Artist filter is client-only — clear it when switching away from client view
+  if (show !== 'client' && 'artist' in activeFilters) {
+    delete activeFilters.artist;
+    applyAllFilters();
+    updateAllCatButtons();
+  }
 });
 
 const personalTracks = tracks.filter(t => t.artist === 'Jack St Jean');
