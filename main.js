@@ -1,3 +1,18 @@
+// ----- theme toggle -----
+
+(function () {
+  const btn = document.getElementById('theme-toggle');
+  function update() {
+    btn.textContent = document.documentElement.classList.contains('light') ? 'dark' : 'light';
+  }
+  update();
+  btn.addEventListener('click', function () {
+    const isLight = document.documentElement.classList.toggle('light');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    update();
+  });
+})();
+
 // ----- rendering and filter logic -----
 
 // Shared filter state — both sections read from and write to this object
@@ -32,6 +47,7 @@ function buildSection(sectionTracks, listId, catsId, subId, categories) {
       el.dataset.artist = t.artist;
       el.dataset.genres = t.genres.join(',');
       el.dataset.work   = t.work.join(',');
+      el.dataset.type   = t.artist === 'Jack St Jean' ? 'personal' : 'client';
 
       const iconHTML = Object.entries(t.links || {})
         .filter(([, url]) => url)
@@ -59,6 +75,7 @@ function buildSection(sectionTracks, listId, catsId, subId, categories) {
 
   function matchesAll(el) {
     return Object.entries(activeFilters).every(([cat, value]) => {
+      if (cat === 'type')   return el.dataset.type === value;
       if (cat === 'artist') return el.dataset.artist === value;
       if (cat === 'genre')  return el.dataset.genres.split(',').includes(value);
       if (cat === 'work')   return el.dataset.work.split(',').includes(value);
@@ -146,35 +163,34 @@ document.getElementById('section-toggle').addEventListener('click', e => {
   if (!btn) return;
   const show = btn.dataset.show;
   document.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b === btn));
-  document.getElementById('section-personal').style.display = show === 'client'   ? 'none' : '';
-  document.getElementById('section-client').style.display   = show === 'personal' ? 'none' : '';
 
-  // Artist filter is client-only — clear it when switching away from client view
-  if (show !== 'client' && 'artist' in activeFilters) {
+  if (show === 'all') {
+    delete activeFilters.type;
+  } else {
+    activeFilters.type = show;
+  }
+
+  // Artist filter only applies to client tracks — clear when switching to personal-only
+  if (show === 'personal' && 'artist' in activeFilters) {
     delete activeFilters.artist;
-    applyAllFilters();
     updateAllCatButtons();
   }
+
+  applyAllFilters();
 });
 
-const personalTracks = tracks.filter(t => t.artist === 'Jack St Jean');
-const clientTracks   = tracks.filter(t => t.artist !== 'Jack St Jean');
-
-buildSection(clientTracks, 'client-list', 'client-filter-cats', 'client-filter-sub', [
+buildSection(tracks, 'all-list', 'all-filter-cats', 'all-filter-sub', [
   { key: 'work',   label: 'Service' },
   { key: 'artist', label: 'Artist'  },
   { key: 'genre',  label: 'Genre'   },
-]);
-
-buildSection(personalTracks, 'personal-list', 'personal-filter-cats', 'personal-filter-sub', [
-  { key: 'work',  label: 'Service' },
-  { key: 'genre', label: 'Genre'   },
 ]);
 
 // Audio: one track at a time + mini-player
 const nowPlaying = document.getElementById('now-playing');
 const npTitle    = document.getElementById('np-title');
 const npToggle   = document.getElementById('np-toggle');
+
+document.getElementById('all-filter-cats').appendChild(nowPlaying);
 let currentAudio = null;
 
 document.querySelectorAll('audio').forEach(audio => {

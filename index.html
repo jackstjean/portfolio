@@ -5,11 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jack St Jean</title>
   <link rel="stylesheet" href="style.css" />
+  <script>history.scrollRestoration = 'manual'; if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');</script>
 </head>
 <body>
 <div class="container">
 
-  <div class="name">Jack St Jean</div>
+  <div class="site-header">
+    <div class="name">Jack St Jean</div>
+    <button id="theme-toggle" class="theme-toggle">light</button>
+  </div>
 
   <div class="section">
     <div class="plain-list">
@@ -27,23 +31,15 @@
   </div>
 
   <div class="section-toggle" id="section-toggle">
-    <button class="toggle-btn" data-show="all">All</button>
+    <button class="toggle-btn active" data-show="all">All</button>
+    <button class="toggle-btn" data-show="client">Client Work</button>
     <button class="toggle-btn" data-show="personal">Personal</button>
-    <button class="toggle-btn active" data-show="client">Client Work</button>
   </div>
 
-  <div class="section" id="section-client">
-    <div class="section-label">Client Work</div>
-    <div class="filter-cats" id="client-filter-cats"></div>
-    <div class="filter-sub" id="client-filter-sub"></div>
-    <div id="client-list"></div>
-  </div>
-
-  <div class="section" id="section-personal" style="display:none">
-    <div class="section-label">Personal</div>
-    <div class="filter-cats" id="personal-filter-cats"></div>
-    <div class="filter-sub" id="personal-filter-sub"></div>
-    <div id="personal-list"></div>
+  <div class="section">
+    <div class="filter-cats" id="all-filter-cats"></div>
+    <div class="filter-sub" id="all-filter-sub"></div>
+    <div id="all-list"></div>
   </div>
   
 </div>
