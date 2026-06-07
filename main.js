@@ -2,8 +2,11 @@
 
 (function () {
   const btn = document.getElementById('theme-toggle');
+  const themeColorMeta = document.querySelector('meta[name="theme-color"]');
   function update() {
-    btn.textContent = document.documentElement.classList.contains('light') ? 'dark' : 'light';
+    const isLight = document.documentElement.classList.contains('light');
+    btn.textContent = isLight ? 'dark' : 'light';
+    themeColorMeta.content = isLight ? '#ffffff' : '#111111';
   }
   update();
   btn.addEventListener('click', function () {
