@@ -3,36 +3,23 @@
 const PLATFORMS = {
   spotify: {
     label: 'Spotify',
-    icon: `<svg width="13" height="13" viewBox="0 0 24 24" style="display:block">
-      <circle cx="12" cy="12" r="12" fill="#1DB954"/>
-      <path d="M7.5 16.3c2.8-1.6 6.4-1.4 9.1.2" stroke="white" stroke-width="1.6" stroke-linecap="round" fill="none"/>
-      <path d="M6.6 12.7c3.6-2 8-1.7 11.3.3"   stroke="white" stroke-width="1.6" stroke-linecap="round" fill="none"/>
-      <path d="M5.8 9c4.5-2.4 10-2 13.8.5"      stroke="white" stroke-width="1.6" stroke-linecap="round" fill="none"/>
-    </svg>`
-  },
-  soundcloud: {
-    label: 'SoundCloud',
-    icon: `<svg width="14" height="11" viewBox="0 0 14 11" style="display:block">
-      <rect x="0"  y="5" width="2" height="6" rx="1" fill="#FF5500"/>
-      <rect x="3"  y="3" width="2" height="8" rx="1" fill="#FF5500"/>
-      <rect x="6"  y="0" width="2" height="11" rx="1" fill="#FF5500"/>
-      <rect x="9"  y="3" width="2" height="8" rx="1" fill="#FF5500"/>
-      <rect x="12" y="5" width="2" height="6" rx="1" fill="#FF5500"/>
-    </svg>`
+    icon: `<img src="https://cdn.simpleicons.org/spotify/1DB954" alt="Spotify">`
   },
   applemusic: {
     label: 'Apple Music',
-    icon: `<svg width="13" height="13" viewBox="0 0 24 24" style="display:block">
-      <circle cx="12" cy="12" r="12" fill="#fc3c44"/>
-      <path d="M16 7.5v6.8c0 1.2-.9 2.2-2 2.2s-2-1-2-2.2.9-2.2 2-2.2c.4 0 .7.1 1 .3V9l-7 1.5v7c0 1.2-.9 2.2-2 2.2S5 18.7 5 17.5s.9-2.2 2-2.2c.4 0 .7.1 1 .3V8.5L16 7.5z" fill="white"/>
-    </svg>`
+    icon: `<img src="https://cdn.simpleicons.org/applemusic/FC3C44" alt="Apple Music">`
   },
   youtube: {
     label: 'YouTube',
-    icon: `<svg width="13" height="13" viewBox="0 0 24 24" style="display:block">
-      <circle cx="12" cy="12" r="12" fill="#fc3c44"/>
-      <path d="M16 7.5v6.8c0 1.2-.9 2.2-2 2.2s-2-1-2-2.2.9-2.2 2-2.2c.4 0 .7.1 1 .3V9l-7 1.5v7c0 1.2-.9 2.2-2 2.2S5 18.7 5 17.5s.9-2.2 2-2.2c.4 0 .7.1 1 .3V8.5L16 7.5z" fill="white"/>
-    </svg>`
+    icon: `<img src="https://cdn.simpleicons.org/youtube/FF0000" alt="YouTube">`
+  },
+  soundcloud: {
+    label: 'SoundCloud',
+    icon: `<img src="https://cdn.simpleicons.org/soundcloud/FF5500" alt="SoundCloud">`
+  },
+  bandcamp: {
+    label: 'Bandcamp',
+    icon: `<img src="https://cdn.simpleicons.org/bandcamp/1DA0C3" alt="Bandcamp">`
   },
 };
 

@@ -52,11 +52,11 @@ function buildSection(sectionTracks, listId, catsId, subId, categories) {
       el.dataset.work   = t.work.join(',');
       el.dataset.type   = t.artist === 'Jack St Jean' ? 'personal' : 'client';
 
-      const iconHTML = Object.entries(t.links || {})
-        .filter(([, url]) => url)
-        .map(([key, url]) => {
+      const iconHTML = Object.keys(PLATFORMS)
+        .filter(key => t.links && t.links[key])
+        .map(key => {
           const p = PLATFORMS[key];
-          return p ? `<a href="${url}" class="platform-icon" title="Listen on ${p.label}" target="_blank" rel="noopener">${p.icon}</a>` : '';
+          return `<a href="${t.links[key]}" class="platform-icon" title="Listen on ${p.label}" target="_blank" rel="noopener">${p.icon}</a>`;
         }).join('');
 
       el.innerHTML = `

@@ -216,6 +216,12 @@ a:hover { text-decoration: underline; }
   text-decoration: none;
 }
 
+.platform-icon img {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
 .platform-icon:hover { opacity: 1; }
 
 .credit-date { color: var(--text-muted); }
