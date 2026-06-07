@@ -97,6 +97,20 @@ function buildSection(sectionTracks, listId, catsId, subId, categories) {
     });
   }
 
+  /* bubble-map sizing
+  function getCounts(cat) {
+    const counts = {};
+    [...listEl.querySelectorAll('.credit')].forEach(e => {
+      const keys = cat === 'artist' ? [e.dataset.artist]
+                 : cat === 'genre'  ? e.dataset.genres.split(',').filter(Boolean)
+                 : cat === 'work'   ? e.dataset.work.split(',').filter(Boolean)
+                 : [];
+      keys.forEach(k => { counts[k] = (counts[k] || 0) + 1; });
+    });
+    return counts;
+  }
+  */
+
   function getOptions(cat) {
     const els = [...listEl.querySelectorAll('.credit')];
     if (cat === 'artist') return [...new Set(els.map(e => e.dataset.artist))].sort();
@@ -110,11 +124,24 @@ function buildSection(sectionTracks, listId, catsId, subId, categories) {
     const opts = getOptions(cat);
     if (!opts.length) { subEl.classList.remove('visible'); return; }
 
+    /* bubble-map sizing
+    const counts = getCounts(cat);
+    const vals = Object.values(counts);
+    const minCount = Math.min(...vals);
+    const maxCount = Math.max(...vals);
+    */
+
     opts.forEach(opt => {
       const btn = document.createElement('button');
       btn.className = 'filter-sub-btn';
       btn.textContent = opt;
       if (activeFilters[cat] === opt) btn.classList.add('active');
+
+      /* bubble-map sizing
+      const t = maxCount > minCount ? (counts[opt] - minCount) / (maxCount - minCount) : 0;
+      btn.style.fontSize = (11 + t * 9) + 'px';
+      */
+
       btn.addEventListener('click', () => {
         if (activeFilters[cat] === opt) {
           delete activeFilters[cat];
