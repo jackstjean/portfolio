@@ -1340,18 +1340,18 @@ const tracks = [
     src: "audio/donnie-black_summers-over.wav",
     links: {},
   },
-  {
-    title: "Be Free",
-    artist: "Donnie Black",
-    date: "",
-    genres: [],
-    work: [],
-    credits: [],
-    genreLabel: "",
-    workLabel: "",
-    src: "audio/donnie-black_be-free.wav",
-    links: {},
-  },
+  // {
+  //   title: "Be Free",
+  //   artist: "Donnie Black",
+  //   date: "",
+  //   genres: [],
+  //   work: [],
+  //   credits: [],
+  //   genreLabel: "",
+  //   workLabel: "",
+  //   src: "audio/donnie-black_be-free.wav",
+  //   links: {},
+  // },
 
   // ─── Frances Eliza ─────────────────────────────────────────────────────────
   {
@@ -1390,5 +1390,29 @@ const tracks = [
     src: "audio/frances-eliza_notice-me.wav",
     links: {},
   },
+  {
+    title: "Nowhere",
+    artist: "Frances Eliza",
+    date: "202501",
+    genres: ["indie", "folk"],
+    work: ["recording", "mixing"],
+    credits: [""],
+    genreLabel: "indie / folk",
+    workLabel: "mixing · recording (vocals)",
+    src: "audio/frances-eliza_nowhere.wav",
+    links: {},
+  },
+  {
+    title: "Kind of Love",
+    artist: "Frances Eliza",
+    date: "202510",
+    genres: ["indie", "rock"],
+    work: ["recording", "mixing"],
+    credits: [""],
+    genreLabel: "indie / rock",
+    workLabel: "mixing · recording (vocals)",
+    src: "audio/frances-eliza_kind-of-love.wav",
+    links: {},
+  }
 ];
 // ───────────────────────────────────────────────────────────────────────────
