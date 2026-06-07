@@ -49,7 +49,10 @@ a:hover { text-decoration: underline; }
   margin-bottom: 2px;
 }
 
-.name { font-weight: bold; }
+.name { 
+  font-weight: bold; 
+  color: var(--accent);
+}
 
 .theme-toggle {
   background: none;
