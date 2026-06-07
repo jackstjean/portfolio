@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,49 +9,55 @@
   <meta name="theme-color" content="#111111">
   <script>history.scrollRestoration = 'manual'; if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');</script>
 </head>
+
 <body>
-<div class="container">
+  <div class="container">
 
-  <div class="site-header">
-    <div class="name">Jack St Jean</div>
-    <button id="theme-toggle" class="theme-toggle">light</button>
-  </div>
-
-  <div class="section">
-    <div class="plain-list">
-      <a href="mailto:jackstjean@gmail.com">jackstjean@gmail.com</a>
-      <a href="https://instagram.com/stjean.mp3" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://www.tiktok.com/@prodjazzbox" target="blank" rel="noopener">TikTok</a>
-      <!-- <a href="https://soundcloud.com/user-986686936" target="_blank" rel="noopener">SoundCloud</a> -->
+    <div class="site-header">
+      <div class="name">Jack St Jean</div>
+      <button id="theme-toggle" class="theme-toggle">light</button>
     </div>
+
+    <div class="section">
+      <div class="section-label"></div>
+      <p>
+        Versatile audio engineer and music producer based in North Carolina.
+        World's first guitarist that can also kind of play drums and bass. 
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="plain-list">
+        <a href="mailto:jackstjean@gmail.com">jackstjean@gmail.com</a>
+        <a href="https://instagram.com/stjean.mp3" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.tiktok.com/@prodjazzbox" target="blank" rel="noopener">TikTok</a>
+        <!-- <a href="https://soundcloud.com/user-986686936" target="_blank" rel="noopener">SoundCloud</a> -->
+      </div>
+    </div>
+
+
+
+    <div class="section-toggle" id="section-toggle">
+      <button class="toggle-btn active" data-show="all">All</button>
+      <button class="toggle-btn" data-show="client">Client Work</button>
+      <button class="toggle-btn" data-show="personal">Personal</button>
+    </div>
+
+    <div class="section">
+      <div class="filter-cats" id="all-filter-cats"></div>
+      <div class="filter-sub" id="all-filter-sub"></div>
+      <div id="all-list"></div>
+    </div>
+
   </div>
 
-  <div class="section">
-    <div class="section-label">Bio</div>
-    <p>Audio Engineer based in Asheville, NC.</p>
-    <!-- <p>Bachelor of Science in Music Technology from UNC Asheville.</p> -->
+  <div id="now-playing">
+    <span id="np-title"></span>
+    <button id="np-toggle">pause</button>
   </div>
 
-  <div class="section-toggle" id="section-toggle">
-    <button class="toggle-btn active" data-show="all">All</button>
-    <button class="toggle-btn" data-show="client">Client Work</button>
-    <button class="toggle-btn" data-show="personal">Personal</button>
-  </div>
-
-  <div class="section">
-    <div class="filter-cats" id="all-filter-cats"></div>
-    <div class="filter-sub" id="all-filter-sub"></div>
-    <div id="all-list"></div>
-  </div>
-  
-</div>
-
-<div id="now-playing">
-  <span id="np-title"></span>
-  <button id="np-toggle">pause</button>
-</div>
-
-<script src="tracks.js"></script>
-<script src="main.js"></script>
+  <script src="tracks.js"></script>
+  <script src="main.js"></script>
 </body>
+
 </html>
