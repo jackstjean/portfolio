@@ -832,7 +832,7 @@ const tracks = [
     work: ["production", "guitar", "bass"],
     credits: [],
     genreLabel: "hiphop / dilla time",
-    workLabel: "production",
+    workLabel: "production · guitar · bass",
     src: "audio/jsj_skipping-rocks_1.mp3",
     links: {},
   },
