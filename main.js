@@ -69,7 +69,12 @@ function buildSection(sectionTracks, listId, catsId, subId, categories) {
           <span>${t.genreLabel}</span>
           <span>${t.workLabel}</span>
         </div>
-        <audio controls src="${t.src}" preload="none"></audio>
+        <audio src="${t.src}" preload="none"></audio>
+        <div class="audio-player">
+          <button class="ap-play">play</button>
+          <div class="ap-bar"><div class="ap-progress"></div></div>
+          <span class="ap-time">0:00</span>
+        </div>
       `;
       listEl.appendChild(el);
     });
@@ -223,16 +228,43 @@ const npToggle   = document.getElementById('np-toggle');
 document.getElementById('all-filter-cats').appendChild(nowPlaying);
 let currentAudio = null;
 
-document.querySelectorAll('audio').forEach(audio => {
-  const title = audio.closest('.credit').querySelector('.credit-top span').textContent;
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  return `${m}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
+}
 
-  const card = audio.closest('.credit');
+document.querySelectorAll('audio').forEach(audio => {
+  const card     = audio.closest('.credit');
+  const title    = card.querySelector('.credit-top span').textContent;
+  const playBtn  = card.querySelector('.ap-play');
+  const bar      = card.querySelector('.ap-bar');
+  const progress = card.querySelector('.ap-progress');
+  const timeEl   = card.querySelector('.ap-time');
+
+  playBtn.addEventListener('click', () => {
+    audio.paused ? audio.play() : audio.pause();
+  });
+
+  bar.addEventListener('click', e => {
+    if (!audio.duration) return;
+    const rect = bar.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    progress.style.width = (audio.currentTime / audio.duration * 100) + '%';
+    timeEl.textContent = formatTime(audio.currentTime);
+  });
 
   audio.addEventListener('play', () => {
     document.querySelectorAll('audio').forEach(a => { if (a !== audio) a.pause(); });
     document.querySelectorAll('.credit.playing').forEach(c => c.classList.remove('playing'));
+    document.querySelectorAll('.ap-play').forEach(b => b.classList.remove('active'));
     currentAudio = audio;
     card.classList.add('playing');
+    playBtn.textContent = 'pause';
+    playBtn.classList.add('active');
     npTitle.textContent = title;
     npToggle.textContent = 'pause';
     nowPlaying.classList.add('visible');
@@ -240,6 +272,8 @@ document.querySelectorAll('audio').forEach(audio => {
 
   audio.addEventListener('pause', () => {
     if (currentAudio === audio) {
+      playBtn.textContent = 'play';
+      playBtn.classList.remove('active');
       npToggle.textContent = 'play';
       card.classList.remove('playing');
     }
@@ -247,6 +281,10 @@ document.querySelectorAll('audio').forEach(audio => {
 
   audio.addEventListener('ended', () => {
     if (currentAudio === audio) {
+      playBtn.textContent = 'play';
+      playBtn.classList.remove('active');
+      progress.style.width = '0%';
+      timeEl.textContent = '0:00';
       nowPlaying.classList.remove('visible');
       card.classList.remove('playing');
     }
