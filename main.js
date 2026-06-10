@@ -247,3 +247,15 @@ npToggle.addEventListener('click', () => {
   if (!currentAudio) return;
   currentAudio.paused ? currentAudio.play() : currentAudio.pause();
 });
+
+document.getElementById('lucky-btn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const audios = [...document.querySelectorAll('.credit:not(.hidden) audio')];
+  if (!audios.length) return;
+  const audio = audios[Math.floor(Math.random() * audios.length)];
+  const card = audio.closest('.credit');
+  audio.play();
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  card.classList.add('lucky-highlight');
+  card.addEventListener('animationend', () => card.classList.remove('lucky-highlight'), { once: true });
+});

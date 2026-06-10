@@ -126,6 +126,8 @@ a:hover { text-decoration: underline; }
   padding-top: 20px;
 }
 
+#lucky-btn { margin-left: auto; }
+
 .toggle-btn {
   background: none;
   border: none;
@@ -193,6 +195,13 @@ a:hover { text-decoration: underline; }
 /* Credits */
 .credit { margin-bottom: 12px; }
 .credit.hidden { display: none; }
+
+@keyframes lucky-flash {
+  0%   { background: transparent; }
+  25%  { background: color-mix(in srgb, var(--accent) 15%, transparent); }
+  100% { background: transparent; }
+}
+.lucky-highlight { animation: lucky-flash 1.2s ease-out; }
 
 .credit-top {
   display: flex;
