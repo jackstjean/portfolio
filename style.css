@@ -82,6 +82,7 @@ a:hover { text-decoration: underline; }
   background: var(--bg);
   z-index: 5;
   padding: 8px 0 4px;
+  padding-top: max(8px, env(safe-area-inset-top));
 }
 
 /* Now playing — inline in filter row */
