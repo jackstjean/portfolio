@@ -193,8 +193,17 @@ a:hover { text-decoration: underline; }
 .filter-sub-btn.active { color: var(--accent); text-decoration: underline; }
 
 /* Credits */
-.credit { margin-bottom: 12px; }
+.credit { margin-bottom: 12px; transition: background 0.4s, padding 0.4s, margin 0.4s, border-radius 0.4s; }
 .credit.hidden { display: none; }
+.credit.playing {
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  padding: 6px 8px;
+  margin: 0 -8px 12px;
+  border-radius: 6px;
+}
+
+.credit.lucky-active { transition: none !important; }
+.credit.lucky-active.playing { background: transparent; }
 
 @keyframes lucky-flash {
   0%   { background: transparent; }

@@ -226,20 +226,30 @@ let currentAudio = null;
 document.querySelectorAll('audio').forEach(audio => {
   const title = audio.closest('.credit').querySelector('.credit-top span').textContent;
 
+  const card = audio.closest('.credit');
+
   audio.addEventListener('play', () => {
     document.querySelectorAll('audio').forEach(a => { if (a !== audio) a.pause(); });
+    document.querySelectorAll('.credit.playing').forEach(c => c.classList.remove('playing'));
     currentAudio = audio;
+    card.classList.add('playing');
     npTitle.textContent = title;
     npToggle.textContent = 'pause';
     nowPlaying.classList.add('visible');
   });
 
   audio.addEventListener('pause', () => {
-    if (currentAudio === audio) npToggle.textContent = 'play';
+    if (currentAudio === audio) {
+      npToggle.textContent = 'play';
+      card.classList.remove('playing');
+    }
   });
 
   audio.addEventListener('ended', () => {
-    if (currentAudio === audio) nowPlaying.classList.remove('visible');
+    if (currentAudio === audio) {
+      nowPlaying.classList.remove('visible');
+      card.classList.remove('playing');
+    }
   });
 });
 
@@ -254,8 +264,12 @@ document.getElementById('lucky-btn').addEventListener('click', (e) => {
   if (!audios.length) return;
   const audio = audios[Math.floor(Math.random() * audios.length)];
   const card = audio.closest('.credit');
+  card.classList.add('lucky-active'); // suppress playing bg during flash
   audio.play();
   card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   card.classList.add('lucky-highlight');
-  card.addEventListener('animationend', () => card.classList.remove('lucky-highlight'), { once: true });
+  card.addEventListener('animationend', () => {
+    card.classList.remove('lucky-highlight');
+    requestAnimationFrame(() => card.classList.remove('lucky-active')); // fade in gray after flash
+  }, { once: true });
 });
